@@ -76,7 +76,19 @@ WSGI_APPLICATION = 'projectdb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'health',      
+        'USER': 'root',         
+        'PASSWORD': 'israel', 
+        'HOST': 'localhost',               
+        'PORT': '3306',                    
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
+    }
+}
 
 
 # Password validation
