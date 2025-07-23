@@ -11,14 +11,14 @@ const ClaimSubmissionForm = () => {
     phonenumber: '',
     memberId: '',
     additionalNotes: '',
-    serviceDate: '',
+    serviceDate: new Date().toISOString().split('T')[0],
     procedureCode: '',
     diagnosisCode: '',
-    itemCode: '',
+    tariffCode: '',
     claimAmount: '0.00'
   });
 
-  const [validation, setValidation] = useState({
+  const [validation] = useState({
     patientEligible: true,
     procedureCovered: true,
     priorAuthRequired: true
@@ -61,7 +61,7 @@ const ClaimSubmissionForm = () => {
         phonenumber: '',
         memberId: '',
         additionalNotes: '',
-        serviceDate: '',
+        serviceDate: new Date().toISOString().split('T')[0],
         procedureCode: '',
         diagnosisCode: '',
         itemCode: '',
@@ -172,12 +172,12 @@ const ClaimSubmissionForm = () => {
               />
             </div>
 
-            <div className="form-group">
+            <div className="form-group w-full">
               <label htmlFor="additionalNotes" className="form-label">Additional Notes</label>
               <textarea
                 id="additionalNotes"
                 name="additionalNotes"
-                className="form-textarea"
+                className="form-textarea w-full"
                 placeholder="Any additional information..."
                 rows="4"
                 value={formData.additionalNotes}
@@ -234,16 +234,15 @@ const ClaimSubmissionForm = () => {
               />
             </div>
 
-            
             <div className="form-group">
-              <label htmlFor="itemCode" className="form-label">Item Code (ICD-10)</label>
+              <label htmlFor="tariffCode" className="form-label">Tariff Code</label>
               <input
                 type="text"
-                id="itemCode"
-                name="itemCode"
+                id="tariffCode"
+                name="tariffCode"
                 className="form-input"
-                placeholder="e.g. Z00.00"
-                value={formData.itemCode}
+                placeholder="e.g. 0190 - GP consultation, R450"
+                value={formData.tariffCode}
                 onChange={handleInputChange}
               />
             </div>
