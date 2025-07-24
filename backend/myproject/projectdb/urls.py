@@ -17,10 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from api.views import ItemViewSet 
+from api.views import PatientViewSet, MedicalAidViewSet, PatientMedicalAidViewSet, MedicalHistoryViewSet, ClaimDetailsViewSet
+from api import views
 
 router = routers.DefaultRouter()
-router.register(r'items', ItemViewSet) # Register the 'items' endpoint
+router.register(r'patients', PatientViewSet) # Register the 'patients' endpoint
+router.register(r'medical-aids', MedicalAidViewSet) # Register the 'medical-aids' endpoint
+router.register(r'patient-medical-aids', PatientMedicalAidViewSet) # Register the 'patient-medical-aids' endpoint
+router.register(r'medical-history', MedicalHistoryViewSet) # Register the 'medical-history' endpoint
+router.register(r'claim-details', ClaimDetailsViewSet) # Register the 'claim-details' endpoint
 
 urlpatterns = [
     path('admin/', admin.site.urls),
