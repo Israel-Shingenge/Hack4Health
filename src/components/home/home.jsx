@@ -1,261 +1,133 @@
-import React, { useState } from 'react';
+import { Building2, Users, TrendingUp, Users2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-import './home.css';
-
-const ClaimSubmissionForm = () => {
-  const [formData, setFormData] = useState({
-    patientId: '',
-    patientName: '',
-    dateOfBirth: '',
-    memberId: '',
-    additionalNotes: '',
-    serviceDate: '',
-    procedureCode: '',
-    diagnosisCode: '',
-    claimAmount: '0.00'
-  });
-
-  const [validation, setValidation] = useState({
-    patientEligible: true,
-    procedureCovered: true,
-    priorAuthRequired: true
-  });
-
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitSuccess(false);
-    setSubmitError('');
-    try {
-      // Replace with your actual API endpoint
-      const response = await fetch('https://localhost:5678/webhook-test/MetHealth-Hack-4-Health', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      if (response.ok) {
-        setSubmitSuccess(true);
-        setFormData({
-        patientId: '',
-        patientName: '',
-        dateOfBirth: '',
-        memberId: '',
-        additionalNotes: '',
-        serviceDate: '',
-        procedureCode: '',
-        diagnosisCode: '',
-        claimAmount: '0.00'
-        });
-
-     
-      } else {
-        throw new Error('Form submission failed');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setSubmitError('There was an error submitting your form. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-
-
+function HomePage() {
+  const navigate = useNavigate();
   return (
-    <div className="claim-form-container">
-      <div className="form-header">
-        <h1 className="form-title">+ New Claim Submission</h1>
-        <p className="form-subtitle">Submit a new medical claim with automatic validation and eligibility checking</p>
-      </div>
-
-      <form className="claim-form" onSubmit={handleSubmit}>
-        <div className="form-sections">
-          {/* Patient Information Section */}
-          <div className="form-section">
-            <h2 className="section-title">Patient Information</h2>
-            
-            <div className="form-group">
-              <label htmlFor="patientId" className="form-label">Patient ID</label>
-              <input
-                type="text"
-                id="patientId"
-                name="patientId"
-                className="form-input"
-                placeholder="Enter patient ID"
-                value={formData.patientId}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="patientName" className="form-label">Patient Name</label>
-              <input
-                type="text"
-                id="patientName"
-                name="patientName"
-                className="form-input"
-                placeholder="Enter patient name"
-                value={formData.patientName}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
-              <input
-                type="date"
-                id="dateOfBirth"
-                name="dateOfBirth"
-                className="form-input date-input"
-                value={formData.dateOfBirth}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="memberId" className="form-label">Member ID</label>
-              <input
-                type="text"
-                id="memberId"
-                name="memberId"
-                className="form-input"
-                placeholder="Medical aid member ID"
-                value={formData.memberId}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="additionalNotes" className="form-label">Additional Notes</label>
-              <textarea
-                id="additionalNotes"
-                name="additionalNotes"
-                className="form-textarea"
-                placeholder="Any additional information..."
-                rows="4"
-                value={formData.additionalNotes}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-
-          {/* Claim Details Section */}
-          <div className="form-section">
-            <h2 className="section-title">Claim Details</h2>
-            
-            <div className="form-group">
-              <label htmlFor="serviceDate" className="form-label">Service Date</label>
-              <input
-                type="date"
-                id="serviceDate"
-                name="serviceDate"
-                className="form-input date-input"
-                value={formData.serviceDate}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="procedureCode" className="form-label">Procedure Code</label>
-              <select
-                id="procedureCode"
-                name="procedureCode"
-                className="form-select"
-                value={formData.procedureCode}
-                onChange={handleInputChange}
-              >
-                <option value="">Select procedure</option>
-                <option value="99213">Office Visit - Established Patient</option>
-                <option value="99214">Office Visit - Detailed</option>
-                <option value="99215">Office Visit - Comprehensive</option>
-                <option value="87804">Lab Test - Comprehensive</option>
-                <option value="73030">X-Ray - Shoulder</option>
-                <option value="73060">X-Ray - Knee</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="diagnosisCode" className="form-label">Diagnosis Code (ICD-10)</label>
-              <input
-                type="text"
-                id="diagnosisCode"
-                name="diagnosisCode"
-                className="form-input"
-                placeholder="e.g. Z00.00"
-                value={formData.diagnosisCode}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="claimAmount" className="form-label">Claim Amount</label>
-              <input
-                type="number"
-                id="claimAmount"
-                name="claimAmount"
-                className="form-input"
-                step="0.01"
-                min="0"
-                value={formData.claimAmount}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-100">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold text-gray-700 mb-6">
+            Automated Claim Processing System
+          </h1>
+          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            Streamline medical claim processing with intelligent automation, validation, and 
+            workflow optimization for healthcare providers and claims departments.
+          </p>
         </div>
 
-        {/* Real-time Validation Section */}
-        <div className="validation-section">
-          <h3 className="validation-title">✓ Real-time Validation</h3>
-          <div className="validation-items">
-            <div className={`validation-item ${validation.patientEligible ? 'success' : 'error'}`}>
-              <span className="validation-icon">✓</span>
-              <span className="validation-text">Patient Eligible</span>
+        {/* Portal Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+          {/* Healthcare Provider Portal */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="flex items-center mb-6">
+              <Building2 className="w-8 h-8 text-gray-600 mr-4" />
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-700 mb-1">Healthcare Provider Portal</h2>
+                <p className="text-gray-500">For hospitals and medical practices</p>
+              </div>
             </div>
-            <div className={`validation-item ${validation.procedureCovered ? 'success' : 'error'}`}>
-              <span className="validation-icon">✓</span>
-              <span className="validation-text">Procedure Covered</span>
-            </div>
-            <div className={`validation-item ${validation.priorAuthRequired ? 'warning' : 'success'}`}>
-              <span className="validation-icon">{validation.priorAuthRequired ? '!' : '✓'}</span>
-              <span className="validation-text">
-                {validation.priorAuthRequired ? 'Prior Auth Required' : 'No Prior Auth Required'}
+
+            {/* Feature Tags */}
+            <div className="flex flex-wrap gap-3 mb-6">
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
+                Claim Submission
+              </span>
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
+                Real-time Validation
+              </span>
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
+                Status Tracking
               </span>
             </div>
+
+            <p className="text-gray-600 mb-8 leading-relaxed">
+              Submit claims, track processing status, receive instant validation 
+              feedback, and manage patient eligibility checks.
+            </p>
+
+            <button
+              className="w-full bg-gray-700 text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
+              onClick={() => navigate('/hp-portal')}
+            >
+              Access Provider Portal
+            </button>
+          </div>
+
+          {/* Claims Department Portal */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="flex items-center mb-6">
+              <Users className="w-8 h-8 text-gray-600 mr-4" />
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-700 mb-1">Claims Department Portal</h2>
+                <p className="text-gray-500">For medical aid administrators</p>
+              </div>
+            </div>
+
+            {/* Feature Tags */}
+            <div className="flex flex-wrap gap-3 mb-6">
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
+                Batch Processing
+              </span>
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
+                Manual Review
+              </span>
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
+                Analytics
+              </span>
+            </div>
+
+            <p className="text-gray-600 mb-8 leading-relaxed">
+              Process claims efficiently with role-based workflows for receivers, batch 
+              clerks, pre-accessors, and manual accessors.
+            </p>
+
+            <button
+              className="w-full bg-gray-700 text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
+              onClick={() => navigate('/cd-portal')}
+            >
+              Access Claims Portal
+            </button>
           </div>
         </div>
 
-        {/* Submit Button */}
-        <button type="submit" className="submit-button" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : 'Submit Claim for Processing'}
-        </button>
-        {submitSuccess && (
-          <div style={{ color: 'green', marginTop: '1rem', textAlign: 'center' }}>
-            Claim submitted successfully!
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Processing Time */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-700">Processing Time</h3>
+              <TrendingUp className="w-5 h-5 text-gray-400" />
+            </div>
+            <div className="text-4xl font-bold text-gray-700 mb-2">2.3 hrs</div>
+            <p className="text-gray-500">Average claim processing time</p>
           </div>
-        )}
-        {submitError && (
-          <div style={{ color: 'red', marginTop: '1rem', textAlign: 'center' }}>
-            {submitError}
+
+          {/* Auto-Approval Rate */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-700">Auto-Approval Rate</h3>
+              <TrendingUp className="w-5 h-5 text-gray-400" />
+            </div>
+            <div className="text-4xl font-bold text-gray-700 mb-2">87%</div>
+            <p className="text-gray-500">Claims processed automatically</p>
           </div>
-        )}
-      </form>
+
+          {/* Active Claims */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-700">Active Claims</h3>
+              <Users2 className="w-5 h-5 text-gray-400" />
+            </div>
+            <div className="text-4xl font-bold text-gray-700 mb-2">1,247</div>
+            <p className="text-gray-500">Currently in processing</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default ClaimSubmissionForm;
+export default HomePage;

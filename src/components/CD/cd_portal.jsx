@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-// Import tab files
-import ClaimSubmissionForm from './claims/claims_form.jsx';
-import ClaimTrackingPage from './track_claims/track_claims.jsx';
-import CheckEligibilityPage from './egibility_check/egilbility_tab.jsx';
-import AnalyticsPage from './analystics/analystics.jsx';
+// Import actual tab components
+import ReceiverClerkTab from './reciever_clerk/reciever.jsx';
+import BatchClerkTab from './batch_clerk/batch.jsx';
+import PreAssessorTab from './pre-accessor/pre-accessor.jsx';
+import ManualAssessorTab from './manual-accessor/manual-accessor.jsx';
 
-const HealthcareProviderPortal = () => {
-  const [activeTab, setActiveTab] = useState('eligibility');
+
+const ClaimsDepartmentPortal = () => {
+  const [activeTab, setActiveTab] = useState('receiver');
   const navigate = useNavigate();
 
   const tabs = [
-    { id: 'eligibility', label: 'Check Eligibility', component: CheckEligibilityPage },
-    { id: 'submit', label: 'Claims', component: ClaimSubmissionForm },
-    { id: 'track', label: 'Track Claims', component: ClaimTrackingPage },
-    { id: 'analytics', label: 'Analytics', component: AnalyticsPage }
+    { id: 'receiver', label: 'Receiver Clerk', component: ReceiverClerkTab },
+    { id: 'batch', label: 'Batch Clerk', component: BatchClerkTab },
+    { id: 'preassessor', label: 'Pre-Assessor', component: PreAssessorTab },
+    { id: 'manual', label: 'Manual Assessor', component: ManualAssessorTab }
   ];
 
   const handleTabChange = (tabId) => {
@@ -35,7 +36,7 @@ const HealthcareProviderPortal = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <button
+              <button 
                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
                 onClick={() => navigate('/')}
               >
@@ -51,8 +52,8 @@ const HealthcareProviderPortal = () => {
       <div className="bg-white/60 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1">Healthcare Provider Portal</h1>
-            <p className="text-sm sm:text-base text-gray-600">MetHealth Medical Center</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1">Claims Department Portal</h1>
+            <p className="text-sm sm:text-base text-gray-600">MetHealth Medical Aid</p>
           </div>
         </div>
       </div>
@@ -60,7 +61,7 @@ const HealthcareProviderPortal = () => {
       {/* Navigation Pills */}
       <div className="bg-white/60 backdrop-blur-sm pb-6">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gray-200/80 backdrop-blur-sm rounded-full p-1 flex overflow-x-auto relative">
+          <div className="bg-gray-200/80 backdrop-blur-sm rounded-full p-1 flex overflow-x-auto relative hide-scrollbar">
             {/* Animated background pill */}
             <div 
               className="absolute bg-white rounded-full shadow-sm transition-all duration-300 ease-in-out"
@@ -97,4 +98,4 @@ const HealthcareProviderPortal = () => {
   );
 };
 
-export default HealthcareProviderPortal;
+export default ClaimsDepartmentPortal;
