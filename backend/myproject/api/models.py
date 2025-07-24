@@ -1,5 +1,4 @@
 from django.db import models
-import secrets
 
 class MemberType(models.TextChoices):
     MAIN = 'MAIN', 'Main Member'
@@ -9,9 +8,10 @@ class MedicalAid(models.Model):
    
     MedicalAidID = models.CharField(max_length=10, unique=True, editable=False)
     MedicalAidName = models.CharField(max_length=100)
-    MedicalAidType = models.CharField(max_length=50) 
     MedicalAidContactNumber = models.CharField(max_length=15, blank=True, null=True)
     MedicalAidEmail = models.EmailField(max_length=254, blank=True, null=True)
+    City = models.CharField(max_length=50, blank=True, null=True)
+    PostalCode = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
         return self.MedicalAidName
@@ -78,6 +78,69 @@ class ClaimDetails(models.Model):
 
     def __str__(self):
         return f"Claim {self.ClaimID} for {self.Patient.PatientFullName}"
+    
+class HealthcareProvider(models.Model):
+    providerName = models.CharField(max_length=100)
+    providerContactNumber = models.CharField(max_length=15, blank=True, null=True)
+    providerEmail = models.EmailField(max_length=254, blank=True, null=True)
+    practiceNumber = models.CharField(max_length=20, unique=True)
+    practiceAddress = models.TextField(blank=True, null=True)
+    disciplineCode = models.CharField(max_length=10, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    postalCode = models.CharField(max_length=10, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.ProviderID:
+            last_id_num = HealthcareProvider.objects.all().count() + 1
+            self.ProviderID = f"HP{last_id_num:05d}" 
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.ProviderName
+    
+class DoctorsDetails(models.Model):
+    healthcare_provider = models.ForeignKey(HealthcareProvider, on_delete=models.CASCADE, related_name='doctors')
+    doctorName = models.CharField(max_length=100)
+    doctorContactNumber = models.CharField(max_length=15, blank=True, null=True)
+    doctorEmail = models.EmailField(max_length=254, blank=True, null=True)
+    doctorSpecialization = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.doctorName} ({self.healthcare_provider.providerName})"
+    
+class DisciplineCode(models.Model):
+    code = models.CharField(max_length=10, unique=True)
+    description = models.CharField(max_length=100)
+    disciplineName = models.CharField(max_length=100, blank=True, null=True)
+    category = models.CharField(max_length=50, blank=True, null=True)
+    authirisation = models.BooleanField(default=False)
+    claimLimits = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    
+
+    def __str__(self):
+        return f"{self.code} - {self.description}"
+    
+class PracticeCode(models.Model):
+    practiceNumber = models.CharField(max_length=20, unique=True)
+    practiceName = models.CharField(max_length=100)
+    practiceType = models.CharField(max_length=50, blank=True, null=True)
+    providerName = models.CharField(max_length=100, blank=True, null=True)
+    practiceAddress = models.TextField(blank=True, null=True)
+    practiceContactNumber = models.CharField(max_length=15, blank=True, null=True)
+    practiceEmail = models.EmailField(max_length=254, blank=True, null=True)
+    disciplineCode = models.ForeignKey(DisciplineCode, on_delete=models.CASCADE, related_name='practice_codes', blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    postalCode = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.practiceNumber} - {self.description}"
+    
+
+    
+
+    
+
+
 
 
         

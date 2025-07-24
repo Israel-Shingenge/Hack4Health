@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from api.views import PatientViewSet, MedicalAidViewSet, PatientMedicalAidViewSet, MedicalHistoryViewSet, ClaimDetailsViewSet
+from api.views import PatientViewSet, MedicalAidViewSet, PatientMedicalAidViewSet, MedicalHistoryViewSet, ClaimDetailsViewSet, HealthcareProviderViewSet, DoctorsDetailsViewSet, DisciplineCodeViewSet, PracticeCodeViewSet
 from api import views
 
 router = routers.DefaultRouter()
@@ -26,6 +26,10 @@ router.register(r'medical-aids', MedicalAidViewSet) # Register the 'medical-aids
 router.register(r'patient-medical-aids', PatientMedicalAidViewSet) # Register the 'patient-medical-aids' endpoint
 router.register(r'medical-history', MedicalHistoryViewSet) # Register the 'medical-history' endpoint
 router.register(r'claim-details', ClaimDetailsViewSet) # Register the 'claim-details' endpoint
+router.register(r'healthcare-providers', views.HealthcareProviderViewSet) # Register the 'healthcare-providers' endpoint
+router.register(r'doctors-details', views.DoctorsDetailsViewSet) # Register the 'doctors-details' endpoint
+router.register(r'discipline-codes', views.DisciplineCodeViewSet) # Register the '
+router.register(r'practice-codes', views.PracticeCodeViewSet) # Register the 'practice-codes' endpoint
 
 urlpatterns = [
     path('admin/', admin.site.urls),

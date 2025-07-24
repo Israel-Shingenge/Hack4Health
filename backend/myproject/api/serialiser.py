@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Patient, MedicalAid, PatientMedicalAid, MedicalHistory, ClaimDetails
+from .models import Patient, MedicalAid, PatientMedicalAid, MedicalHistory, ClaimDetails, HealthcareProvider, DoctorsDetails, DisciplineCode, PracticeCode
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,6 +25,27 @@ class ClaimDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClaimDetails
         fields = '__all__' # Expose all fields from the ClaimDetails model
+
+class HealthcareProviderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HealthcareProvider
+        fields = '__all__' # Expose all fields from the HealthcareProvider model
+
+class DoctorsDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoctorsDetails
+        fields = '__all__' # Expose all fields from the DoctorsDetails model
+
+class DisciplineCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DisciplineCode
+        fields = '__all__' # Expose all fields from the DisciplineCode model
+
+class PracticeCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PracticeCode
+        fields = '__all__' # Expose all fields from the practiceCode model
+
 
 
 

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-in3av7$)d1d)(!nxyma$4)_u&6zrvr^0)1y_4(zc_s*@s#u3i!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -111,12 +111,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
-    "http://127.0.0.1:5173",
+    "http://127.0.0.1:",
+    "http://{LOCAL_NETWORK}:5173",
     # Add your production frontend URL here later, e.g., "https://yourfrontenddomain.com"
 ]
 
 # If you need to allow all origins (less secure, only for development/testing)
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Internationalization
@@ -140,3 +141,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
