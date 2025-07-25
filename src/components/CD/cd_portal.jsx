@@ -66,11 +66,10 @@ const ClaimsDepartmentPortal = () => {
             <div 
               className="absolute bg-white rounded-full shadow-sm transition-all duration-300 ease-in-out"
               style={{
-                width: `${100 / tabs.length}%`,
+                width: `calc(${100 / tabs.length}% - 8px)`,
                 height: 'calc(100% - 8px)',
                 top: '4px',
-                left: `${(tabs.findIndex(tab => tab.id === activeTab) * 100) / tabs.length}%`,
-                transform: `translateX(4px)`
+                left: `calc(${(tabs.findIndex(tab => tab.id === activeTab) * 100) / tabs.length}% + 4px)`,
               }}
             />
             {tabs.map(tab => (

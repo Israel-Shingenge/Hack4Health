@@ -6,6 +6,7 @@ import ClaimSubmissionForm from './claims/claims_form.jsx';
 import ClaimTrackingPage from './track_claims/track_claims.jsx';
 import CheckEligibilityPage from './egibility_check/egilbility_tab.jsx';
 import AnalyticsPage from './analystics/analystics.jsx';
+import APIConnectionTest from '../test/APIConnectionTest.jsx';
 
 const HealthcareProviderPortal = () => {
   const [activeTab, setActiveTab] = useState('eligibility');
@@ -15,7 +16,8 @@ const HealthcareProviderPortal = () => {
     { id: 'eligibility', label: 'Check Eligibility', component: CheckEligibilityPage },
     { id: 'submit', label: 'Claims', component: ClaimSubmissionForm },
     { id: 'track', label: 'Track Claims', component: ClaimTrackingPage },
-    { id: 'analytics', label: 'Analytics', component: AnalyticsPage }
+    { id: 'analytics', label: 'Analytics', component: AnalyticsPage },
+    { id: 'test', label: 'API Test', component: APIConnectionTest }
   ];
 
   const handleTabChange = (tabId) => {
@@ -30,26 +32,16 @@ const HealthcareProviderPortal = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <button
+      {/* Portal Title */}
+      <div className="bg-white/60 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+               <button
                 className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
                 onClick={() => navigate('/')}
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="font-medium text-sm sm:text-base">Home</span>
               </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Portal Title */}
-      <div className="bg-white/60 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="text-center">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1">Healthcare Provider Portal</h1>
             <p className="text-sm sm:text-base text-gray-600">MetHealth Medical Center</p>
@@ -60,16 +52,15 @@ const HealthcareProviderPortal = () => {
       {/* Navigation Pills */}
       <div className="bg-white/60 backdrop-blur-sm pb-6">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gray-200/80 backdrop-blur-sm rounded-full p-1 flex overflow-x-auto relative">
+          <div className="bg-gray-200/80 backdrop-blur-sm rounded-full p-1 flex overflow-x-auto relative hide-scrollbar">
             {/* Animated background pill */}
             <div 
               className="absolute bg-white rounded-full shadow-sm transition-all duration-300 ease-in-out"
               style={{
-                width: `${100 / tabs.length}%`,
+                width: `calc(${100 / tabs.length}% - 8px)`,
                 height: 'calc(100% - 8px)',
                 top: '4px',
-                left: `${(tabs.findIndex(tab => tab.id === activeTab) * 100) / tabs.length}%`,
-                transform: `translateX(4px)`
+                left: `calc(${(tabs.findIndex(tab => tab.id === activeTab) * 100) / tabs.length}% + 4px)`,
               }}
             />
             {tabs.map(tab => (

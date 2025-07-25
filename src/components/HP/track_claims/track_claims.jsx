@@ -129,7 +129,7 @@ const ClaimTrackingPage = () => {
                 </span>
               </button>
             </div>
-          </div>
+  
 
           {/* Claims List */}
           <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
@@ -203,6 +203,7 @@ const ClaimTrackingPage = () => {
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Bottom Navigation Dots */}
