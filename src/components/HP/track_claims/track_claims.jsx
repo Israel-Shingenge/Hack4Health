@@ -4,45 +4,137 @@ import { Search, ChevronLeft, ChevronRight, X, Settings } from 'lucide-react';
 const ClaimTrackingPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages] = useState(2);
+  const [totalPages] = useState(1);
 
-  // Sample claims data
+  // Realistic medical claims data based on Django models
   const [claims] = useState([
     {
       id: 'CLM-2024-001',
       patient: 'John Smith',
-      amount: 'R3245.00',
+      patientId: 'P00001',
+      amount: 'R3,245.00',
       status: 'Processing',
       statusType: 'processing',
-      progress: 95,
-      description: 'Pre-Assessment'
+      progress: 85,
+      description: 'Pre-Authorization Review',
+      serviceDate: '2024-01-15',
+      diagnosisCode: 'Z00.00',
+      diagnosisDescription: 'General adult medical examination without abnormal findings',
+      doctorName: 'Dr. Sarah Wilson',
+      practiceName: 'Family Health Practice',
+      medicalAidPlan: 'Discovery Health Medical Scheme - Essential Smart',
+      submittedDate: '2024-01-16',
+      lastUpdated: '2024-01-18',
+      claimType: 'Consultation',
+      priority: 'Standard'
     },
     {
       id: 'CLM-2024-002',
       patient: 'Sarah Johnson',
-      amount: 'R2450.00',
+      patientId: 'P00002',
+      amount: 'R2,450.00',
       status: 'Approved',
       statusType: 'approved',
       progress: 100,
-      description: 'Completed'
+      description: 'Payment Processed',
+      serviceDate: '2024-01-12',
+      diagnosisCode: 'M79.1',
+      diagnosisDescription: 'Myalgia - muscle pain and stiffness',
+      doctorName: 'Dr. Michael Chen',
+      practiceName: 'Sports Medicine Centre',
+      medicalAidPlan: 'Momentum Health - Ingwe Option',
+      submittedDate: '2024-01-13',
+      lastUpdated: '2024-01-19',
+      claimType: 'Physiotherapy',
+      priority: 'Standard',
+      paymentDate: '2024-01-19',
+      referenceNumber: 'REF-2024-002'
     },
     {
       id: 'CLM-2024-003',
       patient: 'James Doe',
-      amount: 'R3300.00',
+      patientId: 'P00003',
+      amount: 'R3,300.00',
       status: 'Pending',
       statusType: 'pending',
       progress: 60,
-      description: 'Pending'
+      description: 'Awaiting Medical Records',
+      serviceDate: '2024-01-14',
+      diagnosisCode: 'H52.4',
+      diagnosisDescription: 'Presbyopia - age-related focusing difficulty',
+      doctorName: 'Dr. Amanda Roberts',
+      practiceName: 'Clear Vision Optometry',
+      medicalAidPlan: 'Bonitas Medical Fund - BonCap',
+      submittedDate: '2024-01-15',
+      lastUpdated: '2024-01-17',
+      claimType: 'Optometry',
+      priority: 'Standard',
+      pendingReason: 'Additional documentation required'
     },
     {
       id: 'CLM-2024-004',
-      patient: 'Sarah Johnson',
-      amount: 'R99 000.00',
+      patient: 'Maria Garcia',
+      patientId: 'P00004',
+      amount: 'R99,000.00',
       status: 'Rejected',
       statusType: 'rejected',
       progress: 0,
-      description: 'Rejected'
+      description: 'Pre-authorization Declined',
+      serviceDate: '2024-01-10',
+      diagnosisCode: 'M17.1',
+      diagnosisDescription: 'Bilateral primary osteoarthritis of knee',
+      doctorName: 'Dr. Robert Thompson',
+      practiceName: 'Orthopedic Surgery Institute',
+      medicalAidPlan: 'Medihelp Medical Scheme - Necesse',
+      submittedDate: '2024-01-11',
+      lastUpdated: '2024-01-16',
+      claimType: 'Surgery',
+      priority: 'High',
+      rejectionReason: 'Procedure not covered under current benefit option',
+      appealDeadline: '2024-02-16'
+    },
+    {
+      id: 'CLM-2024-005',
+      patient: 'David Wilson',
+      patientId: 'P00005',
+      amount: 'R1,850.00',
+      status: 'Processing',
+      statusType: 'processing',
+      progress: 45,
+      description: 'Claims Assessment',
+      serviceDate: '2024-01-18',
+      diagnosisCode: 'J06.9',
+      diagnosisDescription: 'Acute upper respiratory infection, unspecified',
+      doctorName: 'Dr. Lisa Park',
+      practiceName: 'Gateway Family Clinic',
+      medicalAidPlan: 'GEMS Medical Scheme - Emerald Value',
+      submittedDate: '2024-01-19',
+      lastUpdated: '2024-01-20',
+      claimType: 'General Practice',
+      priority: 'Standard'
+    },
+    {
+      id: 'CLM-2024-006',
+      patient: 'Emily Davis',
+      patientId: 'P00006',
+      amount: 'R15,750.00',
+      status: 'Approved',
+      statusType: 'approved',
+      progress: 100,
+      description: 'Payment Processed',
+      serviceDate: '2024-01-08',
+      diagnosisCode: 'O80.1',
+      diagnosisDescription: 'Spontaneous vertex delivery',
+      doctorName: 'Dr. Jennifer Adams',
+      practiceName: 'Maternity Care Hospital',
+      medicalAidPlan: 'Discovery Health Medical Scheme - Executive',
+      submittedDate: '2024-01-09',
+      lastUpdated: '2024-01-17',
+      claimType: 'Maternity',
+      priority: 'High',
+      paymentDate: '2024-01-17',
+      referenceNumber: 'REF-2024-006',
+      hospitalAdmission: true
     }
   ]);
 
@@ -76,7 +168,12 @@ const ClaimTrackingPage = () => {
 
   const filteredClaims = claims.filter(claim =>
     claim.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    claim.patient.toLowerCase().includes(searchQuery.toLowerCase())
+    claim.patient.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    claim.patientId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    claim.diagnosisCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    claim.doctorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    claim.practiceName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    claim.medicalAidPlan.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Tab logic
@@ -118,7 +215,7 @@ const ClaimTrackingPage = () => {
               </div>
               <input
                 type="text"
-                placeholder="Search by claim ID, patient name, or member ID"
+                placeholder="Search by claim ID, patient name, patient ID, diagnosis code, doctor, or practice"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm"
@@ -136,40 +233,102 @@ const ClaimTrackingPage = () => {
             {filteredClaims.map((claim, index) => (
               <div
                 key={claim.id}
-                className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:bg-white/90 transition-all duration-300 group"
+                className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:bg-white/90 transition-all duration-300 group cursor-pointer"
+                onClick={() => {
+                  // Future: Open detailed view modal
+                  console.log('Opening detailed view for:', claim.id);
+                }}
               >
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                  {/* Left Section */}
-                  <div className="flex-1 space-y-3 sm:space-y-4">
+                <div className="flex flex-col gap-4">
+                  {/* Header Row */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                       <h3 className="text-base sm:text-lg font-bold text-gray-900">{claim.id}</h3>
                       <span className={`inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${getStatusColor(claim.statusType)} w-fit`}>
                         {claim.status}
                       </span>
+                      {claim.priority === 'High' && (
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 w-fit">
+                          High Priority
+                        </span>
+                      )}
                     </div>
-                    <p className="text-sm sm:text-base text-gray-600">{claim.patient}</p>
-
-                    {/* Progress Bar */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs sm:text-sm text-gray-600">Progress</span>
-                        <span className="text-xs sm:text-sm font-medium text-gray-900">{claim.progress}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2 sm:h-2.5">
-                        <div
-                          className={`h-full rounded-full transition-all duration-500 ${getProgressColor(claim.statusType)}`}
-                          style={{ width: `${claim.progress}%` }}
-                        ></div>
-                      </div>
+                    <div className="text-right">
+                      <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{claim.amount}</p>
+                      <p className="text-xs sm:text-sm text-gray-600">{claim.claimType}</p>
                     </div>
                   </div>
 
-                  {/* Right Section */}
-                  <div className="flex flex-row sm:flex-col items-start sm:items-end justify-between sm:justify-start gap-2 sm:gap-1 text-right">
-                    <div className="order-2 sm:order-1">
-                      <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{claim.amount}</p>
-                      <p className="text-xs sm:text-sm text-gray-600">{claim.description}</p>
+                  {/* Patient & Service Info */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <p className="font-semibold text-gray-900">{claim.patient}</p>
+                      <p className="text-gray-600">Patient ID: {claim.patientId}</p>
+                      <p className="text-gray-600">{claim.medicalAidPlan}</p>
                     </div>
+                    <div>
+                      <p className="font-semibold text-gray-700">Service Details</p>
+                      <p className="text-gray-600">Date: {claim.serviceDate}</p>
+                      <p className="text-gray-600">Doctor: {claim.doctorName}</p>
+                      <p className="text-gray-600">Practice: {claim.practiceName}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-700">Diagnosis</p>
+                      <p className="text-gray-600">Code: {claim.diagnosisCode}</p>
+                      <p className="text-gray-600 text-xs leading-relaxed">{claim.diagnosisDescription}</p>
+                    </div>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs sm:text-sm text-gray-600">Progress: {claim.description}</span>
+                      <span className="text-xs sm:text-sm font-medium text-gray-900">{claim.progress}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2 sm:h-2.5">
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${getProgressColor(claim.statusType)}`}
+                        style={{ width: `${claim.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Status-specific Information */}
+                  {claim.statusType === 'approved' && claim.paymentDate && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <p className="text-sm text-green-800">
+                        <span className="font-semibold">Payment Processed:</span> {claim.paymentDate}
+                        {claim.referenceNumber && <span className="ml-2">| Ref: {claim.referenceNumber}</span>}
+                      </p>
+                    </div>
+                  )}
+
+                  {claim.statusType === 'rejected' && claim.rejectionReason && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <p className="text-sm text-red-800">
+                        <span className="font-semibold">Rejection Reason:</span> {claim.rejectionReason}
+                      </p>
+                      {claim.appealDeadline && (
+                        <p className="text-sm text-red-600 mt-1">
+                          <span className="font-semibold">Appeal Deadline:</span> {claim.appealDeadline}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {claim.statusType === 'pending' && claim.pendingReason && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                      <p className="text-sm text-yellow-800">
+                        <span className="font-semibold">Pending:</span> {claim.pendingReason}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Timeline Info */}
+                  <div className="flex flex-wrap gap-4 text-xs text-gray-500 border-t pt-3">
+                    <span>Submitted: {claim.submittedDate}</span>
+                    <span>Last Updated: {claim.lastUpdated}</span>
+                    {claim.hospitalAdmission && <span className="text-blue-600 font-medium">Hospital Admission</span>}
                   </div>
                 </div>
               </div>

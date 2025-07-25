@@ -51,10 +51,9 @@ const ClaimSubmissionForm = () => {
     dateOfBirth: '',
     emailAddress: '',
     phoneNumber: '',
-    memberId: '',
-    patientAccount: '',
     patientAddress: '',
-    medicalAidPlan: '',
+    medicalAidPlanName: '',
+    patientAccountNumber: '',
     authorizationNumber: '',
     practiceName: '',
     practiceAddress: '',
@@ -66,8 +65,8 @@ const ClaimSubmissionForm = () => {
     nationalProviderId: '',
     serviceDate: new Date().toISOString().split('T')[0],
     placeOfService: '',
-    procedureCode: '',  // Added missing field
-    itemCode: '',       // Added missing field
+    procedureCode: '',
+    itemCode: '',
     description: '',
     claimAmount: '0.00',
     daysUnits: 1,
@@ -101,7 +100,9 @@ const ClaimSubmissionForm = () => {
     DateOfBirth: '',
     PatientEmail: '',
     PatientPhone: '',
-    MemberID: '',
+    PatientAddress: '',
+    MedicalAidPlanName: '',
+    PatientAccountNumber: '',
     AdditionalNotes: '',
   });
 
@@ -121,7 +122,9 @@ const ClaimSubmissionForm = () => {
         DateOfBirth: '',
         PatientEmail: '',
         PatientPhone: '',
-        MemberID: '',
+        PatientAddress: '',
+        MedicalAidPlanName: '',
+        PatientAccountNumber: '',
         AdditionalNotes: '',
         id: null 
       }));
@@ -136,13 +139,32 @@ const ClaimSubmissionForm = () => {
           setTimeout(async () => {
             try {
               // Search for patient by PatientID - matching working pattern
-              const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.patients}?PatientID=${value}`);
+              const searchUrl = `${API_BASE_URL}${API_ENDPOINTS.patients}?PatientID=${value}`;
+              console.log('Searching for patient at URL:', searchUrl);
+              
+              const response = await fetch(searchUrl, {
+                headers: {
+                  'ngrok-skip-browser-warning': 'true',
+                  'Content-Type': 'application/json',
+                }
+              });
+              
               if (!response.ok) {
-                console.log(`Patient with ID ${value} not found.`);
+                console.log(`API Error: ${response.status} - Patient with ID ${value} not found.`);
                 setIsPatientFound(false);
                 setLoadingPatient(false);
                 return;
               }
+              
+              // Check if response is JSON
+              const contentType = response.headers.get('content-type');
+              if (!contentType || !contentType.includes('application/json')) {
+                console.error('API returned non-JSON response. Check if ngrok tunnel is active.');
+                setIsPatientFound(false);
+                setLoadingPatient(false);
+                return;
+              }
+              
               const data = await response.json();
               if (data && data.length > 0) {
                 const foundPatient = data[0];
@@ -154,8 +176,10 @@ const ClaimSubmissionForm = () => {
                   dateOfBirth: foundPatient.DateOfBirth,
                   emailAddress: foundPatient.PatientEmail,
                   phoneNumber: foundPatient.PatientPhone,
-                  memberId: foundPatient.MemberID,
-                  additionalNotes: foundPatient.AdditionalNotes,
+                  patientAddress: foundPatient.PatientAddress || '',
+                  medicalAidPlanName: foundPatient.MedicalAidPlanName || '',
+                  patientAccountNumber: foundPatient.PatientAccountNumber || '',
+                  additionalNotes: foundPatient.AdditionalNotes || '',
                 }));
                 setIsPatientFound(true);
               } else {
@@ -164,6 +188,9 @@ const ClaimSubmissionForm = () => {
               }
             } catch (error) {
               console.error('Error searching for patient by ID:', error);
+              if (error.message.includes('Unexpected token')) {
+                console.error('API returned HTML instead of JSON. Check if ngrok tunnel is active and Django server is running.');
+              }
               setIsPatientFound(false);
             } finally {
               setLoadingPatient(false);
@@ -192,7 +219,9 @@ const ClaimSubmissionForm = () => {
           DateOfBirth: formData.dateOfBirth,
           PatientEmail: formData.emailAddress,
           PatientPhone: formData.phoneNumber,
-          MemberID: formData.memberId,
+          PatientAddress: formData.patientAddress,
+          MedicalAidPlanName: formData.medicalAidPlanName,
+          PatientAccountNumber: formData.patientAccountNumber,
           AdditionalNotes: formData.additionalNotes,
         };
         console.log('Creating new patient:', newPatientPayload);
@@ -207,29 +236,26 @@ const ClaimSubmissionForm = () => {
           DateOfBirth: formData.dateOfBirth,
           PatientEmail: formData.emailAddress,
           PatientPhone: formData.phoneNumber,
-          MemberID: formData.memberId,
+          PatientAddress: formData.patientAddress,
+          MedicalAidPlanName: formData.medicalAidPlanName,
+          PatientAccountNumber: formData.patientAccountNumber,
           AdditionalNotes: formData.additionalNotes,
         };
         console.log('Updating existing patient:', updatedPatientData);
         await apiClient(API_ENDPOINTS.patients + `${patientData.id}/`, 'PUT', updatedPatientData);
       }
 
-      // Create claim payload with extended data - matching working pattern
+      // Create claim payload matching Django ClaimDetails model exactly
       const claimPayload = {
         Patient: patientIdForClaim,
         ClaimAmount: parseFloat(formData.claimAmount),
-        ProcedureCode: formData.procedureCode,
         DiagnosisCode: formData.diagnosisCode,
-        ItemCode: formData.itemCode,
         ServiceDate: formData.serviceDate,
-        // Additional fields for comprehensive claim
-        PatientAccount: formData.patientAccount,
-        MedicalAidPlan: formData.medicalAidPlan,
-        AuthorizationNumber: formData.authorizationNumber,
         PracticeName: formData.practiceName,
-        IsEmergency: formData.isEmergency,
+        PracticeAddress: formData.practiceAddress,
+        DoctorsName: formData.doctorName,
         DiagnosisDescription: formData.diagnosisDescription,
-        DoctorName: formData.doctorName,
+        AdditionalNotes: formData.additionalNotes,
       };
 
       console.log('Creating claim:', claimPayload);
@@ -241,17 +267,16 @@ const ClaimSubmissionForm = () => {
 
       setSubmitSuccess(true);
       
-      // Reset form to new structure
+      // Reset form to match Django model structure
       setFormData({
         patientId: '',
         patientName: '',
         dateOfBirth: '',
         emailAddress: '',
         phoneNumber: '',
-        memberId: '',
-        patientAccount: '',
         patientAddress: '',
-        medicalAidPlan: '',
+        medicalAidPlanName: '',
+        patientAccountNumber: '',
         authorizationNumber: '',
         practiceName: '',
         practiceAddress: '',
@@ -277,7 +302,7 @@ const ClaimSubmissionForm = () => {
         claimFrequencyCode: '',
       });
       
-      // Reset patient data
+      // Reset patient data to match Django model
       setIsPatientFound(false);
       setPatientData({
         id: null,
@@ -286,7 +311,9 @@ const ClaimSubmissionForm = () => {
         DateOfBirth: '',
         PatientEmail: '',
         PatientPhone: '',
-        MemberID: '',
+        PatientAddress: '',
+        MedicalAidPlanName: '',
+        PatientAccountNumber: '',
         AdditionalNotes: '',
       });
       
@@ -429,35 +456,34 @@ const ClaimSubmissionForm = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="memberId" className="form-label">Medical Aid Member ID *</label>
+              <label htmlFor="medicalAidPlanName" className="form-label">Medical Aid Plan Name *</label>
               <input
                 type="text"
-                id="memberId"
-                name="memberId"
+                id="medicalAidPlanName"
+                name="medicalAidPlanName"
                 className="form-input"
-                placeholder="Medical aid member ID"
-                value={formData.memberId}
+                placeholder="Enter medical aid plan name"
+                value={formData.medicalAidPlanName}
                 onChange={handleInputChange}
                 required
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="patientAccount" className="form-label">Patient Account Number *</label>
+              <label htmlFor="patientAccountNumber" className="form-label">Patient Account Number</label>
               <input
                 type="text"
-                id="patientAccount"
-                name="patientAccount"
+                id="patientAccountNumber"
+                name="patientAccountNumber"
                 className="form-input"
                 placeholder="Enter patient account number"
-                value={formData.patientAccount}
+                value={formData.patientAccountNumber}
                 onChange={handleInputChange}
-                required
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="patientAddress" className="form-label">Patient Address *</label>
+              <label htmlFor="patientAddress" className="form-label">Patient Address</label>
               <textarea
                 id="patientAddress"
                 name="patientAddress"
@@ -465,22 +491,20 @@ const ClaimSubmissionForm = () => {
                 placeholder="Enter patient address"
                 value={formData.patientAddress}
                 onChange={handleInputChange}
-                required
                 rows="2"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="medicalAidPlan" className="form-label">Medical Aid Plan Name *</label>
+              <label htmlFor="medicalAidPlanName" className="form-label">Medical Aid Plan Name</label>
               <input
                 type="text"
-                id="medicalAidPlan"
-                name="medicalAidPlan"
+                id="medicalAidPlanName"
+                name="medicalAidPlanName"
                 className="form-input"
                 placeholder="Enter medical aid plan"
-                value={formData.medicalAidPlan}
+                value={formData.medicalAidPlanName}
                 onChange={handleInputChange}
-                required
               />
             </div>
           </div>
@@ -504,14 +528,14 @@ const ClaimSubmissionForm = () => {
 
             <div className="form-group">
               <label htmlFor="practiceAddress" className="form-label">Practice Address</label>
-              <input
+              <textarea
                 id="practiceAddress"
                 name="practiceAddress"
-                className="form-input"
+                className="form-textarea"
                 placeholder="Practice Address"
                 value={formData.practiceAddress}
                 onChange={handleInputChange}
-                required
+                rows="2"
               />
             </div>
 
@@ -524,26 +548,7 @@ const ClaimSubmissionForm = () => {
                 placeholder="Enter doctor name"
                 value={formData.doctorName}
                 onChange={handleInputChange}
-                required
               />
-            </div>
-
-            <div className="form-group">
-              <div className="checkbox-group">
-                <input
-                  type="checkbox"
-                  id="isEmergency"
-                  name="isEmergency"
-                  checked={formData.isEmergency}
-                  onChange={(e) => handleInputChange({
-                    target: {
-                      name: 'isEmergency',
-                      value: e.target.checked
-                    }
-                  })}
-                />
-                <label htmlFor="isEmergency">Emergency Case</label>
-              </div>
             </div>
 
             <div className="form-group">
@@ -560,7 +565,7 @@ const ClaimSubmissionForm = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="diagnosisDescription" className="form-label">Diagnosis Description *</label>
+              <label htmlFor="diagnosisDescription" className="form-label">Diagnosis Description</label>
               <textarea
                 id="diagnosisDescription"
                 name="diagnosisDescription"
@@ -568,7 +573,6 @@ const ClaimSubmissionForm = () => {
                 placeholder="Enter diagnosis details"
                 value={formData.diagnosisDescription}
                 onChange={handleInputChange}
-                required
               />
             </div>
 
@@ -580,38 +584,6 @@ const ClaimSubmissionForm = () => {
                 name="serviceDate"
                 className="form-input date-input"
                 value={formData.serviceDate}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="procedureCode" className="form-label">Procedure Code</label>
-              <select
-                id="procedureCode"
-                name="procedureCode"
-                className="form-input"
-                value={formData.procedureCode}
-                onChange={handleInputChange}
-              >
-                <option value="">Select procedure</option>
-                <option value="0001">0001 - Consultation</option>
-                <option value="0021">0021 - Urgency</option>
-                <option value="0030">0030 - Follow-up</option>
-                <option value="99213">99213 - Office Visit - Established Patient</option>
-                <option value="99214">99214 - Office Visit - Detailed</option>
-                <option value="99215">99215 - Office Visit - Comprehensive</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="itemCode" className="form-label">Item Code</label>
-              <input
-                type="text"
-                id="itemCode"
-                name="itemCode"
-                className="form-input"
-                placeholder="Enter item code"
-                value={formData.itemCode}
                 onChange={handleInputChange}
               />
             </div>
@@ -681,7 +653,7 @@ const ClaimSubmissionForm = () => {
                         type="text"
                         className="form-input"
                         name={`accountNo_${index}`}
-                        defaultValue={index === 0 ? formData.patientAccount : ''}
+                        defaultValue={index === 0 ? formData.patientAccountNumber : ''}
                       />
                     </td>
                     <td>

@@ -4,7 +4,7 @@
 // export const API_BASE_URL = process.env.REACT_APP_H4H_POST_API || 'http://10.250.39.25:8000/api';
 
 //Connecting to django on a different network using ngrok
-export const API_BASE_URL = process.env.REACT_APP_H4H_POST_API || 'https://ac4737f74e4a.ngrok-free.app/api';
+export const API_BASE_URL = process.env.REACT_APP_H4H_POST_API || 'https://8bcb62c930d1.ngrok-free.app';
 
 // N8N Webhook endpoint - replace with your actual n8n webhook URL
 export const N8N_WEBHOOK_URL = process.env.REACT_APP_N8N_WEBHOOK_URL || 'https://warm-lion-0.hooks.n8n.cloud/webhook-test/90218907-159b-4296-84b7-0c9e82f44a15';
@@ -23,6 +23,7 @@ export const apiClient = async (endpointPath, method = 'GET', data = null) => {
   const url = `${API_BASE_URL}/${endpointPath}`;
   const headers = {
     'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true', // Add ngrok header by default
   };
   const config = {
     method,
@@ -47,6 +48,9 @@ export const apiClient = async (endpointPath, method = 'GET', data = null) => {
     return responseData;
   } catch (error) {
     console.error('API Error:', error.message);
+    if (error.message.includes('Unexpected token')) {
+      console.error('API returned HTML instead of JSON. Check if ngrok tunnel is active and Django server is running.');
+    }
     throw error;
   }
 };

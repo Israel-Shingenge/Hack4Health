@@ -2,21 +2,19 @@ import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 // Import actual tab components
-import ReceiverClerkTab from './reciever_clerk/reciever.jsx';
-import BatchClerkTab from './batch_clerk/batch.jsx';
-import PreAssessorTab from './pre-accessor/pre-accessor.jsx';
+import ReceivedClaimsTab from './received_claims/received_claims.jsx';
 import ManualAssessorTab from './manual-accessor/manual-accessor.jsx';
+import SeniorManualAssessorTab from './senior_manual_assessor/senior_manual_assessor.jsx';
 
 
 const ClaimsDepartmentPortal = () => {
-  const [activeTab, setActiveTab] = useState('receiver');
+  const [activeTab, setActiveTab] = useState('received');
   const navigate = useNavigate();
 
   const tabs = [
-    { id: 'receiver', label: 'Receiver Clerk', component: ReceiverClerkTab },
-    { id: 'batch', label: 'Batch Clerk', component: BatchClerkTab },
-    { id: 'preassessor', label: 'Pre-Assessor', component: PreAssessorTab },
-    { id: 'manual', label: 'Manual Assessor', component: ManualAssessorTab }
+    { id: 'received', label: 'Received Claims', component: ReceivedClaimsTab },
+    { id: 'manual', label: 'Manual Assessor', component: ManualAssessorTab },
+    { id: 'senior', label: 'Senior Manual Assessor', component: SeniorManualAssessorTab }
   ];
 
   const handleTabChange = (tabId) => {
