@@ -56,10 +56,11 @@ class ClaimDetailsViewSet(viewsets.ModelViewSet):
         for claim in existing_claims:
             MedicalHistory.objects.create(
                 patient_id=patient_id,
-                conditions=f"Claim - Procedure: {claim.ProcedureCode}, Diagnosis: {claim.DiagnosisCode}",
+                conditions=f"Claim - Diagnosis: {claim.DiagnosisCode}",
                 diagnosisDate=claim.ServiceDate,
-                treatmentDetails=f"Claim amount: {claim.ClaimAmount}, Item codes: {claim.ItemCode}"
+                treatmentDetails=f"Claim amount: {claim.ClaimAmount}"
             )
+
 
         # Delete old claims after archiving
         existing_claims.delete()

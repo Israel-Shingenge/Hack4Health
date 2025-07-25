@@ -6,6 +6,10 @@ export const API_ENDPOINTS = {
   patientMedicalAids: 'patient-medical-aids/',
   medicalHistory: 'medical-history/',
   claimDetails: 'claim-details/',
+  healthcareProviders: 'healthcare-providers/',
+  practiceCodes: 'practice-codes/',
+  doctorDetails: 'doctor-details/',
+  disciplineCodes: 'discipline-codes/',
 };
 
 export const apiClient = async (endpointPath, method = 'GET', data = null) => {

@@ -22,6 +22,10 @@ class Patient(models.Model):
     DateOfBirth = models.DateField()
     PatientEmail = models.EmailField(max_length=254, unique=True)
     PatientPhone = models.CharField(max_length=15, unique=True)
+    PatientAddress = models.TextField(blank=True, null=True)
+    MedicalAidPlanName = models.CharField(max_length=100, blank=True, null=True)
+    PatientAccountNumber = models.CharField(max_length=20, unique=True, blank=True, null=True)
+    AdditionalNotes = models.TextField(blank=True, null=True)
 
     # Use a ManyToManyField through an intermediary model
     medical_aids = models.ManyToManyField(
@@ -71,10 +75,14 @@ class MedicalHistory(models.Model):
 class ClaimDetails(models.Model):
     Patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='claims')
     ClaimAmount = models.DecimalField(max_digits=10, decimal_places=2)
-    ProcedureCode = models.CharField(max_length=20)
     DiagnosisCode = models.CharField(max_length=20)
-    ItemCode = models.CharField(max_length=20)
     ServiceDate = models.DateField()
+    PracticeName = models.CharField(max_length=100, blank=True, null=True)
+    PracticeAddress = models.TextField(blank=True, null=True)
+    DoctorsName = models.CharField(max_length=100, blank=True, null=True)
+    DiagnosisDescription = models.TextField(blank=True, null=True)
+    AdditionalNotes = models.TextField(blank=True, null=True)
+    CreatedAt = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Claim {self.ClaimID} for {self.Patient.PatientFullName}"
