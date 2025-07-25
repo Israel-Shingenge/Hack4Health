@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-in3av7$)d1d)(!nxyma$4)_u&6zrvr^0)1y_4(zc_s*@s#u3i!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok.io']
 
@@ -112,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
     "http://127.0.0.1:",
-    "http://{LOCAL_NETWORK}:5173",
+    "http://10.250.39.25:5173",
     # Add your production frontend URL here later, e.g., "https://yourfrontenddomain.com"
 ]
 
